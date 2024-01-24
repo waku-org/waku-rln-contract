@@ -112,12 +112,6 @@ function withdraw() external pure
 
 Allows a user to withdraw funds allocated to them upon slashing a member
 
-## StorageAlreadyExists
-
-```solidity
-error StorageAlreadyExists(address storageAddress)
-```
-
 ## NoStorageContractAvailable
 
 ```solidity

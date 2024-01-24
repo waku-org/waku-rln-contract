@@ -24,11 +24,16 @@ contract WakuRlnRegistryTest is Test {
         wakuRlnRegistry = WakuRlnRegistry(proxy);
     }
 
-    function test__NewStorage() public {
+    function test__ValidNewStorage() public {
         wakuRlnRegistry.newStorage(MAX_MESSAGE_LIMIT);
     }
 
-    function test__RegisterStorage_BadIndex() public {
+    function test__InvalidNewStorage() public {
+        vm.expectRevert(InvalidMaxMessageLimit.selector);
+        wakuRlnRegistry.newStorage(0);
+    }
+
+    function test__InvalidRegisterStorage__BadIndex() public {
         wakuRlnRegistry.registerStorage(address(new WakuRln(MAX_MESSAGE_LIMIT, 0)));
         address newStorage = address(new WakuRln(MAX_MESSAGE_LIMIT, 0));
         vm.expectRevert(IncompatibleStorageIndex.selector);
@@ -89,6 +94,28 @@ contract WakuRlnRegistryTest is Test {
         assertEq(wakuRlnRegistry.nextStorageIndex(), 2);
     }
 
+    function test__InvalidIndexedRegistration() public {
+        uint256[] memory idCommitments = new uint256[](1);
+        uint256[] memory limits = new uint256[](1);
+
+        idCommitments[0] = 1;
+        limits[0] = 1;
+
+        vm.expectRevert(NoStorageContractAvailable.selector);
+        wakuRlnRegistry.register(10, idCommitments, limits);
+    }
+
+    function test__ValidIndexedRegistration() public {
+        uint256[] memory idCommitments = new uint256[](1);
+        uint256[] memory limits = new uint256[](1);
+
+        idCommitments[0] = 1;
+        limits[0] = 1;
+
+        wakuRlnRegistry.newStorage(MAX_MESSAGE_LIMIT);
+        wakuRlnRegistry.register(0, idCommitments, limits);
+    }
+
     function test__SingleRegistration(uint256 commitment) public {
         vm.assume(isValidCommitment(commitment));
         wakuRlnRegistry.newStorage(MAX_MESSAGE_LIMIT);
@@ -147,5 +174,11 @@ contract WakuRlnRegistryTest is Test {
         wakuRlnRegistry.forceProgress();
         assertEq(wakuRlnRegistry.usingStorageIndex(), 0);
         assertEq(wakuRlnRegistry.nextStorageIndex(), 0);
+    }
+
+    // tests if the upgradeTo function works
+    function test__Upgrade() public {
+        address newImpl = address(new WakuRlnRegistry());
+        wakuRlnRegistry.upgradeTo(newImpl);
     }
 }

@@ -6,7 +6,6 @@ import {UUPSUpgradeable} from "openzeppelin-contracts/contracts/proxy/utils/UUPS
 import {OwnableUpgradeable} from "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import {ERC1967Proxy} from "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
-error StorageAlreadyExists(address storageAddress);
 error NoStorageContractAvailable();
 error IncompatibleStorage();
 error IncompatibleStorageIndex();
@@ -38,7 +37,6 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function registerStorage(address storageAddress) external onlyOwner {
-        if (storages[nextStorageIndex] != address(0)) revert StorageAlreadyExists(storageAddress);
         WakuRln wakuRln = WakuRln(storageAddress);
         if (wakuRln.contractIndex() != nextStorageIndex) revert IncompatibleStorageIndex();
         _insertIntoStorageMap(storageAddress);
@@ -76,12 +74,10 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
 
     function register(uint16 storageIndex, uint256 idCommitment, uint256 userMessageLimit) external {
         if (storageIndex >= nextStorageIndex) revert NoStorageContractAvailable();
-        // optimize the gas used below
         WakuRln(storages[storageIndex]).register(idCommitment, userMessageLimit);
     }
 
     function forceProgress() external onlyOwner onlyUsableStorage {
-        if (storages[usingStorageIndex + 1] == address(0)) revert NoStorageContractAvailable();
         usingStorageIndex += 1;
     }
 }
