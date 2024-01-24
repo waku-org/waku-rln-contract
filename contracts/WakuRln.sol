@@ -67,10 +67,6 @@ contract WakuRln is Ownable, RlnBase {
         _register(idCommitment, userMessageLimit);
     }
 
-    function slash(uint256 idCommitment, address payable receiver, uint256[8] calldata proof) external pure override {
-        revert NotImplemented();
-    }
-
     function _validateRegistration(uint256 idCommitment, uint256 userMessageLimit)
         internal
         view
@@ -88,6 +84,10 @@ contract WakuRln is Ownable, RlnBase {
         override
     {
         revert NotImplemented();
+    }
+
+    function slash(uint256 idCommitment, address payable receiver, uint256[8] calldata proof) external pure override {
+        _validateSlash(idCommitment, receiver, proof);
     }
 
     function withdraw() external pure override {

@@ -8,3 +8,4 @@ cache_path  = 'cache_forge'
 # 5667: Unused function parameter. Remove or comment out the variable name to silence this warning.
 # 5740: Unreachable code.
 ignored_error_codes = [5667, 5740]
+memory_limit = 4355443200

@@ -74,6 +74,20 @@ Allows a user to register as a member
 | idCommitment     | uint256 | The idCommitment of the member  |
 | userMessageLimit | uint256 | The message limit of the member |
 
+### \_validateRegistration
+
+```solidity
+function _validateRegistration(uint256 idCommitment, uint256 userMessageLimit) internal view
+```
+
+_Inheriting contracts MUST override this function_
+
+### \_validateSlash
+
+```solidity
+function _validateSlash(uint256 idCommitment, address payable receiver, uint256[8] proof) internal pure
+```
+
 ### slash
 
 ```solidity
@@ -89,20 +103,6 @@ _Allows a user to slash a member_
 | idCommitment | uint256         | The idCommitment of the member |
 | receiver     | address payable |                                |
 | proof        | uint256[8]      |                                |
-
-### \_validateRegistration
-
-```solidity
-function _validateRegistration(uint256 idCommitment, uint256 userMessageLimit) internal view
-```
-
-_Inheriting contracts MUST override this function_
-
-### \_validateSlash
-
-```solidity
-function _validateSlash(uint256 idCommitment, address payable receiver, uint256[8] proof) internal pure
-```
 
 ### withdraw
 

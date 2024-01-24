@@ -44,6 +44,12 @@ contract WakuRlnTest is Test {
         wakuRln.register(commitments, limits);
     }
 
+    function test__ValidSingleRegistration() public {
+        uint256 idCommitment = 1;
+        uint256 userMessageLimit = 1;
+        wakuRln.register(idCommitment, userMessageLimit);
+    }
+
     function test__InvalidRegistration__Duplicate() public {
         // Register a batch of commitments
         uint256[] memory commitments = new uint256[](2);
@@ -62,6 +68,24 @@ contract WakuRlnTest is Test {
         limits[0] = 1;
         vm.expectRevert(MalformedCommitmentToMessageLimitMap.selector);
         wakuRln.register(commitments, limits);
+    }
+
+    function test__InvalidRegistration__FullTree() public {
+        vm.pauseGasMetering();
+        // Register a batch of commitments
+        uint256[] memory commitments = new uint256[](SET_SIZE);
+        uint256[] memory limits = new uint256[](SET_SIZE);
+
+        for (uint256 i = 0; i < commitments.length; i++) {
+            commitments[i] = i + 1;
+            limits[i] = 1;
+        }
+
+        wakuRln.register(commitments, limits);
+
+        vm.resumeGasMetering();
+        vm.expectRevert(FullTree.selector);
+        wakuRln.register(SET_SIZE + 1, 1);
     }
 
     function test__InvalidFeatures() public {
