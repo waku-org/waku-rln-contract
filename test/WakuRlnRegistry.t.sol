@@ -181,4 +181,11 @@ contract WakuRlnRegistryTest is Test {
         address newImpl = address(new WakuRlnRegistry());
         wakuRlnRegistry.upgradeTo(newImpl);
     }
+
+    function test__InvalidUpgrade() public {
+        address newImpl = address(new WakuRlnRegistry());
+        vm.prank(address(0));
+        vm.expectRevert();
+        wakuRlnRegistry.upgradeTo(newImpl);
+    }
 }
