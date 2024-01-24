@@ -4,54 +4,17 @@
       "name": "sepolia",
       "chainId": "11155111",
       "contracts": {
-        "PoseidonHasher": {
-          "address": "0x6b81Eaf30b0C16A9842458A3131fBa78745907A8",
-          "abi": [
-            {
-              "inputs": [],
-              "name": "Q",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "input",
-                  "type": "uint256"
-                }
-              ],
-              "name": "hash",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "result",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "pure",
-              "type": "function"
-            }
-          ]
-        },
         "WakuRlnRegistry_Implementation": {
-          "address": "0xF1935b338321013f11068abCafC548A7B0db732C",
+          "address": "0x451dE04f6C219EFDE9432a3B34D8eaac54C43589",
           "abi": [
             {
               "inputs": [],
-              "name": "IncompatibleStorage",
+              "name": "IncompatibleStorageIndex",
               "type": "error"
             },
             {
               "inputs": [],
-              "name": "IncompatibleStorageIndex",
+              "name": "InvalidMaxMessageLimit",
               "type": "error"
             },
             {
@@ -174,20 +137,20 @@
               "type": "function"
             },
             {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "_poseidonHasher",
-                  "type": "address"
-                }
-              ],
+              "inputs": [],
               "name": "initialize",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
             },
             {
-              "inputs": [],
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "maxMessageLimit",
+                  "type": "uint256"
+                }
+              ],
               "name": "newStorage",
               "outputs": [],
               "stateMutability": "nonpayable",
@@ -221,19 +184,6 @@
             },
             {
               "inputs": [],
-              "name": "poseidonHasher",
-              "outputs": [
-                {
-                  "internalType": "contract IPoseidonHasher",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "proxiableUUID",
               "outputs": [
                 {
@@ -248,26 +198,13 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint16",
-                  "name": "storageIndex",
-                  "type": "uint16"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "commitment",
-                  "type": "uint256"
-                }
-              ],
-              "name": "register",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "uint256[]",
                   "name": "commitments",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "limits",
                   "type": "uint256[]"
                 }
               ],
@@ -284,8 +221,36 @@
                   "type": "uint16"
                 },
                 {
+                  "internalType": "uint256",
+                  "name": "idCommitment",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "userMessageLimit",
+                  "type": "uint256"
+                }
+              ],
+              "name": "register",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint16",
+                  "name": "storageIndex",
+                  "type": "uint16"
+                },
+                {
                   "internalType": "uint256[]",
                   "name": "commitments",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "limits",
                   "type": "uint256[]"
                 }
               ],
@@ -393,7 +358,7 @@
           ]
         },
         "WakuRlnRegistry_Proxy": {
-          "address": "0xF471d71E9b1455bBF4b85d475afb9BB0954A29c4",
+          "address": "0xE784b13B443b4a60557C8D5AF5942b16E434047B",
           "abi": [
             {
               "inputs": [
@@ -467,14 +432,14 @@
           ]
         },
         "WakuRlnStorage_0": {
-          "address": "0x58322513A35a8f747AF5A385bA14C2AbE602AA59",
+          "address": "0xd0AB35EdF257B2790274d84D485b4B91D90D6144",
           "abi": [
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_poseidonHasher",
-                  "type": "address"
+                  "internalType": "uint256",
+                  "name": "_maxMessageLimit",
+                  "type": "uint256"
                 },
                 {
                   "internalType": "uint16",
@@ -507,6 +472,38 @@
               "type": "error"
             },
             {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "startIndex",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "endIndex",
+                  "type": "uint256"
+                }
+              ],
+              "name": "InvalidPaginationQuery",
+              "type": "error"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "messageLimit",
+                  "type": "uint256"
+                }
+              ],
+              "name": "InvalidUserMessageLimit",
+              "type": "error"
+            },
+            {
+              "inputs": [],
+              "name": "MalformedCommitmentToMessageLimitMap",
+              "type": "error"
+            },
+            {
               "inputs": [],
               "name": "NotImplemented",
               "type": "error"
@@ -518,6 +515,12 @@
                   "indexed": false,
                   "internalType": "uint256",
                   "name": "idCommitment",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "userMessageLimit",
                   "type": "uint256"
                 },
                 {
@@ -583,7 +586,33 @@
             },
             {
               "inputs": [],
+              "name": "MAX_MESSAGE_LIMIT",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
               "name": "MEMBERSHIP_DEPOSIT",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "Q",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -634,8 +663,70 @@
               "type": "function"
             },
             {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "startIndex",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "endIndex",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getCommitments",
+              "outputs": [
+                {
+                  "internalType": "uint256[]",
+                  "name": "",
+                  "type": "uint256[]"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "userMessageLimit",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getDepositAmount",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
               "inputs": [],
               "name": "idCommitmentIndex",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "indexToCommitment",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -662,7 +753,7 @@
                   "type": "bool"
                 }
               ],
-              "stateMutability": "view",
+              "stateMutability": "pure",
               "type": "function"
             },
             {
@@ -717,23 +808,15 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "poseidonHasher",
-              "outputs": [
-                {
-                  "internalType": "contract PoseidonHasher",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "uint256[]",
-                  "name": "idCommitments",
+                  "name": "commitments",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "limits",
                   "type": "uint256[]"
                 }
               ],
@@ -747,6 +830,11 @@
                 {
                   "internalType": "uint256",
                   "name": "idCommitment",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "userMessageLimit",
                   "type": "uint256"
                 }
               ],
@@ -815,6 +903,25 @@
               "name": "transferOwnership",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "userMessageLimits",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {

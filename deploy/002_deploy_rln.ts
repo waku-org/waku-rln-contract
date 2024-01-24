@@ -16,12 +16,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     hre.ethers.provider.getSigner(deployer)
   );
 
+  const maxMessageLimit = 20;
+
   const indexOfStorageToBeDeployed = await registryContract.nextStorageIndex();
-  const tx = await registryContract.newStorage();
+  const tx = await registryContract.newStorage(maxMessageLimit);
   await tx.wait();
 
-  const poseidonHasherAddress = (await deployments.get("PoseidonHasher"))
-    .address;
   const storageAddress = await registryContract.storages(
     indexOfStorageToBeDeployed
   );
@@ -31,7 +31,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const d: DeploymentSubmission = {
     abi: extendedArtifact.abi,
     address: storageAddress,
-    args: [poseidonHasherAddress, indexOfStorageToBeDeployed],
+    args: [maxMessageLimit, indexOfStorageToBeDeployed],
     bytecode: extendedArtifact.bytecode,
     deployedBytecode: extendedArtifact.deployedBytecode,
     receipt: tx,

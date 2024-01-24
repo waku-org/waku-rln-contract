@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.15;
+pragma solidity 0.8.19;
 
 import {WakuRln} from "./WakuRln.sol";
-import {IPoseidonHasher} from "rln-contract/PoseidonHasher.sol";
 import {UUPSUpgradeable} from "openzeppelin-contracts/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {OwnableUpgradeable} from "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import {ERC1967Proxy} from "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
@@ -11,14 +10,13 @@ error StorageAlreadyExists(address storageAddress);
 error NoStorageContractAvailable();
 error IncompatibleStorage();
 error IncompatibleStorageIndex();
+error InvalidMaxMessageLimit();
 
 contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
     uint16 public nextStorageIndex;
     mapping(uint16 => address) public storages;
 
     uint16 public usingStorageIndex = 0;
-
-    IPoseidonHasher public poseidonHasher;
 
     event NewStorageContract(uint16 index, address storageAddress);
 
@@ -27,8 +25,7 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
         _;
     }
 
-    function initialize(address _poseidonHasher) external initializer {
-        poseidonHasher = IPoseidonHasher(_poseidonHasher);
+    function initialize() external initializer {
         __Ownable_init();
     }
 
@@ -43,20 +40,20 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
     function registerStorage(address storageAddress) external onlyOwner {
         if (storages[nextStorageIndex] != address(0)) revert StorageAlreadyExists(storageAddress);
         WakuRln wakuRln = WakuRln(storageAddress);
-        if (wakuRln.poseidonHasher() != poseidonHasher) revert IncompatibleStorage();
         if (wakuRln.contractIndex() != nextStorageIndex) revert IncompatibleStorageIndex();
         _insertIntoStorageMap(storageAddress);
     }
 
-    function newStorage() external onlyOwner {
-        WakuRln newStorageContract = new WakuRln(address(poseidonHasher), nextStorageIndex);
+    function newStorage(uint256 maxMessageLimit) external onlyOwner {
+        if (maxMessageLimit == 0) revert InvalidMaxMessageLimit();
+        WakuRln newStorageContract = new WakuRln(maxMessageLimit, nextStorageIndex);
         _insertIntoStorageMap(address(newStorageContract));
     }
 
-    function register(uint256[] calldata commitments) external onlyUsableStorage {
+    function register(uint256[] calldata commitments, uint256[] calldata limits) external onlyUsableStorage {
         // iteratively check if the storage contract is full, and increment the usingStorageIndex if it is
         while (true) {
-            try WakuRln(storages[usingStorageIndex]).register(commitments) {
+            try WakuRln(storages[usingStorageIndex]).register(commitments, limits) {
                 break;
             } catch (bytes memory err) {
                 if (keccak256(err) != keccak256(abi.encodeWithSignature("FullTree()"))) {
@@ -72,17 +69,15 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
         }
     }
 
-    function register(uint16 storageIndex, uint256[] calldata commitments) external {
+    function register(uint16 storageIndex, uint256[] calldata commitments, uint256[] calldata limits) external {
         if (storageIndex >= nextStorageIndex) revert NoStorageContractAvailable();
-        WakuRln(storages[storageIndex]).register(commitments);
+        WakuRln(storages[storageIndex]).register(commitments, limits);
     }
 
-    function register(uint16 storageIndex, uint256 commitment) external {
+    function register(uint16 storageIndex, uint256 idCommitment, uint256 userMessageLimit) external {
         if (storageIndex >= nextStorageIndex) revert NoStorageContractAvailable();
         // optimize the gas used below
-        uint256[] memory commitments = new uint256[](1);
-        commitments[0] = commitment;
-        WakuRln(storages[storageIndex]).register(commitments);
+        WakuRln(storages[storageIndex]).register(idCommitment, userMessageLimit);
     }
 
     function forceProgress() external onlyOwner onlyUsableStorage {
