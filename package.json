@@ -14,6 +14,8 @@
     "deploy:sepolia": "yarn deploy sepolia",
     "deploy:localhost": "yarn deploy localhost",
     "verify:sepolia": "hardhat --network sepolia etherscan-verify",
+    "migrate:v1-v2:sepolia": "hardhat --network sepolia run scripts/migrate/v1-v2.ts",
+    "migrate:v1-v2:localhost": "hardhat --network localhost run scripts/migrate/v1-v2.ts",
     "coverage": "forge coverage --report lcov",
     "fmt": "prettier --write \"**/*.{js,ts}\"",
     "lint": "prettier --check \"**/*.{js,ts}\"",

@@ -51,6 +51,27 @@ yarn deploy:sepolia
 yarn verify:sepolia # Ensure you have set ETHERSCAN_API_KEY in your env
 ```
 
+## Migrating v1 to v2
+
+Refer to the [script](./scripts/migrate/v1-v2.ts) for more information.
+
+### Locally
+
+- To migrate on a local node, first start the local node and then run the migrate script
+
+```shell
+yarn node
+yarn migrate:v1-v2:localhost
+```
+
+### Sepolia
+
+- To migrate to an target network (like Sepolia), use the name as mentioned in the Hardhat config file.
+
+```shell
+yarn migrate:v1-v2:sepolia
+```
+
 ## References
 
 For more information, see https://hardhat.org/hardhat-runner/docs/guides/project-setup

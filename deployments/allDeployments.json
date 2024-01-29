@@ -5,7 +5,7 @@
       "chainId": "11155111",
       "contracts": {
         "WakuRlnRegistry_Implementation": {
-          "address": "0x451dE04f6C219EFDE9432a3B34D8eaac54C43589",
+          "address": "0xC58900Eeb0bE8C7f54DdCD40488B30cDeEBCcbD8",
           "abi": [
             {
               "inputs": [],
@@ -20,17 +20,6 @@
             {
               "inputs": [],
               "name": "NoStorageContractAvailable",
-              "type": "error"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "storageAddress",
-                  "type": "address"
-                }
-              ],
-              "name": "StorageAlreadyExists",
               "type": "error"
             },
             {
@@ -358,7 +347,7 @@
           ]
         },
         "WakuRlnRegistry_Proxy": {
-          "address": "0xE784b13B443b4a60557C8D5AF5942b16E434047B",
+          "address": "0xABd93f37833107eDbAb58633ad5463aDEa1F95F4",
           "abi": [
             {
               "inputs": [
@@ -432,7 +421,7 @@
           ]
         },
         "WakuRlnStorage_0": {
-          "address": "0xd0AB35EdF257B2790274d84D485b4B91D90D6144",
+          "address": "0xbd250d26E9dc468592f51bc892488450BfCb22b7",
           "abi": [
             {
               "inputs": [
