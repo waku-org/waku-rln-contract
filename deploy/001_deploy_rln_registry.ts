@@ -1,5 +1,5 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { DeployFunction, DeploymentSubmission } from "hardhat-deploy/types";
+import { DeployFunction } from "hardhat-deploy/types";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getUnnamedAccounts } = hre;
@@ -26,5 +26,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 };
 
 export default func;
+func.skip = async (hre: HardhatRuntimeEnvironment) => {
+  if (hre.network.name === "sepolia") {
+    return true;
+  }
+  return false;
+};
 func.tags = ["WakuRlnRegistry"];
 func.dependencies = ["PoseidonHasher"];
