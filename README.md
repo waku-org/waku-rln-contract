@@ -10,11 +10,15 @@ The following will need to be installed in order to use this repo. Please follow
   - This will install `forge`, `cast`, and `anvil`
   - You can test you've installed them right by running `forge --version` and get an output like: `forge 0.2.0 (92f8951 2022-08-06T00:09:32.96582Z)`
   - To get the latest of each, just run `foundryup`
-- [Yarn](https://classic.yarnpkg.com/lang/en/docs/install)
+- [Yarn]
+  - Classic version as per these instructions: https://classic.yarnpkg.com/lang/en/docs/install (tested with v1.22.21)
+- [Nodejs]
+  - Hardhat compatibility requires Nodejs < v18.19.1
 
 ## Compilation
 
 ```shell
+forge install
 yarn compile
 ```
 
