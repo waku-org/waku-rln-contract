@@ -35,14 +35,14 @@ const getNetworkConfig = (): NetworksUserConfig | undefined => {
         url: "http://localhost:8545",
       },
     };
-  } else if (RPC_PROVIDER) {
+  } else {
+    const LOCALHOST_PROVIDER = RPC_PROVIDER || "http://localhost:8545";
     return {
       localhost_integration: {
-        url: RPC_PROVIDER,
+        url: LOCALHOST_PROVIDER,
       },
     };
   }
-  return undefined;
 };
 
 // You need to export an object to set up your config
