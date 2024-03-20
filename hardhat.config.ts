@@ -12,7 +12,8 @@ import "hardhat-gas-reporter";
 import "solidity-docgen";
 
 dotenv.config();
-const { SEPOLIA_URL, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
+const { SEPOLIA_URL, PRIVATE_KEY, ETHERSCAN_API_KEY, RPC_PROVIDER } =
+  process.env;
 
 const getNetworkConfig = (): NetworksUserConfig | undefined => {
   if (SEPOLIA_URL && PRIVATE_KEY) {
@@ -32,6 +33,12 @@ const getNetworkConfig = (): NetworksUserConfig | undefined => {
       },
       localhost_integration: {
         url: "http://localhost:8545",
+      },
+    };
+  } else if (RPC_PROVIDER) {
+    return {
+      localhost_integration: {
+        url: RPC_PROVIDER,
       },
     };
   }
