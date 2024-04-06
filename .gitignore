@@ -12,3 +12,4 @@ artifacts
 cache_forge
 out
 lcov.info
+report

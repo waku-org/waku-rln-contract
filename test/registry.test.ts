@@ -24,21 +24,28 @@ describe("WakuRlnRegistry", () => {
     // A valid pair of (id_secret, id_commitment) generated in rust
     const idCommitment =
       "0x0c3ac305f6a4fe9bfeb3eba978bc876e2a99208b8b56c80160cfb54ba8f02368";
+    const userMessageLimit = "0x01";
 
-    const registerTx = await rlnRegistry["register(uint16,uint256)"](
+    const registerTx = await rlnRegistry["register(uint16,uint256,uint256)"](
       await rlnRegistry.usingStorageIndex(),
-      idCommitment
+      idCommitment,
+      userMessageLimit
     );
     const txRegisterReceipt = await registerTx.wait();
 
     // parse the event into (uint256, uint256)
     const event = rlnStorage.interface.parseLog(txRegisterReceipt.events[0]);
     const fetchedIdCommitment = event.args.idCommitment;
+    const fetchedUserMessageLimit = event.args.userMessageLimit;
 
     // We ensure the registered id_commitment is the one we passed
     expect(
       fetchedIdCommitment.toHexString() === idCommitment,
       "registered commitment doesn't match passed commitment"
+    );
+    expect(
+      fetchedUserMessageLimit.toHexString() === userMessageLimit,
+      "registered user message limit doesn't match passed user message limit"
     );
   });
 });
