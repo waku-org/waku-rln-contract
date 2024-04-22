@@ -19,7 +19,7 @@ contract WakuRlnRegistryTest is Test {
     function setUp() public {
         poseidonHasher = new PoseidonHasher();
         address implementation = address(new WakuRlnRegistry());
-        bytes memory data = abi.encodeCall(WakuRlnRegistry.initialize, address(poseidonHasher));
+        bytes memory data = abi.encodeCall(WakuRlnRegistry.initialize, (address(poseidonHasher), 0));
         address proxy = address(new ERC1967Proxy(implementation, data));
         wakuRlnRegistry = WakuRlnRegistry(proxy);
     }
@@ -29,14 +29,14 @@ contract WakuRlnRegistryTest is Test {
     }
 
     function test__RegisterStorage_BadIndex() public {
-        wakuRlnRegistry.registerStorage(address(new WakuRln(address(poseidonHasher), 0)));
-        address newStorage = address(new WakuRln(address(poseidonHasher), 0));
+        wakuRlnRegistry.registerStorage(address(new WakuRln(address(poseidonHasher), 0, 0)));
+        address newStorage = address(new WakuRln(address(poseidonHasher), 0, 0));
         vm.expectRevert(IncompatibleStorageIndex.selector);
         wakuRlnRegistry.registerStorage(newStorage);
     }
 
     function test__RegisterStorage_BadImpl() public {
-        address newStorage = address(new WakuRln(address(new PoseidonHasher()), 0));
+        address newStorage = address(new WakuRln(address(new PoseidonHasher()), 0, 0));
         vm.expectRevert(IncompatibleStorage.selector);
         wakuRlnRegistry.registerStorage(newStorage);
     }

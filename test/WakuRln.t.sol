@@ -16,13 +16,14 @@ contract WakuRlnTest is Test {
     uint256 public constant MEMBERSHIP_DEPOSIT = 1000000000000000;
     uint256 public constant DEPTH = 20;
     uint256 public constant SET_SIZE = 1048576;
+    uint40 public constant TTL = 100;
 
     uint256[8] public zeroedProof = [0, 0, 0, 0, 0, 0, 0, 0];
 
     /// @dev Setup the testing environment.
     function setUp() public {
         poseidon = new PoseidonHasher();
-        wakuRln = new WakuRln(address(poseidon), 0);
+        wakuRln = new WakuRln(address(poseidon), 0, TTL);
     }
 
     /// @dev Ensure that you can hash a value.
