@@ -15,16 +15,16 @@ contract WakuRln is Ownable, RlnBase {
     uint16 public immutable contractIndex;
 
     /// @notice The default TTL period in seconds for a membership
-    uint256 public immutable MEMBERSHIP_TTL;
+    uint40 public immutable MEMBERSHIP_TTL;
 
     /// @notice The expiry timestamp of a membership
     /// maps from idCommitment to a timestamp
-    mapping(uint256 => uint256) public membershipExpiry;
+    mapping(uint256 => uint40) public membershipExpiry;
 
     constructor(
         address _poseidonHasher,
         uint16 _contractIndex,
-        uint256 _ttl
+        uint40 _ttl
     ) Ownable() RlnBase(0, 20, _poseidonHasher, address(0)) {
         contractIndex = _contractIndex;
         MEMBERSHIP_TTL = _ttl;
@@ -35,7 +35,7 @@ contract WakuRln is Ownable, RlnBase {
 
         members[idCommitment] = index;
         memberExists[idCommitment] = true;
-        membershipExpiry[idCommitment] = block.timestamp + MEMBERSHIP_TTL;
+        membershipExpiry[idCommitment] = uint40(block.timestamp) + MEMBERSHIP_TTL;
 
         emit MemberRegistered(idCommitment, index);
     }

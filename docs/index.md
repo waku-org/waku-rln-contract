@@ -6,6 +6,18 @@
 error NotImplemented()
 ```
 
+## InvalidIdCommitmentIndex
+
+```solidity
+error InvalidIdCommitmentIndex(uint256 idCommitment, uint256 index)
+```
+
+## MembershipStillActive
+
+```solidity
+error MembershipStillActive(uint256 idCommitment)
+```
+
 ## WakuRln
 
 ### contractIndex
@@ -14,13 +26,36 @@ error NotImplemented()
 uint16 contractIndex
 ```
 
+### MEMBERSHIP_TTL
+
+```solidity
+uint40 MEMBERSHIP_TTL
+```
+
+The default TTL period in seconds for a membership
+
+### membershipExpiry
+
+```solidity
+mapping(uint256 => uint40) membershipExpiry
+```
+
+The expiry timestamp of a membership
+maps from idCommitment to a timestamp
+
 ### constructor
 
 ```solidity
-constructor(address _poseidonHasher, uint16 _contractIndex) public
+constructor(address _poseidonHasher, uint16 _contractIndex, uint40 _ttl) public
 ```
 
-### _register
+### \_setCommitment
+
+```solidity
+function _setCommitment(uint256 idCommitment, uint256 index) internal
+```
+
+### \_register
 
 ```solidity
 function _register(uint256 idCommitment) internal
@@ -30,8 +65,8 @@ Registers a member
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name         | Type    | Description                    |
+| ------------ | ------- | ------------------------------ |
 | idCommitment | uint256 | The idCommitment of the member |
 
 ### register
@@ -39,6 +74,29 @@ Registers a member
 ```solidity
 function register(uint256[] idCommitments) external
 ```
+
+### registerAtIndex
+
+```solidity
+function registerAtIndex(uint256 idCommitment, uint256 index) external
+```
+
+Register a member at specific index
+
+#### Parameters
+
+| Name         | Type    | Description                               |
+| ------------ | ------- | ----------------------------------------- |
+| idCommitment | uint256 | The idCommitment of the member            |
+| index        | uint256 | The index in which to register the member |
+
+### renew
+
+```solidity
+function renew(uint256 idCommitment) external
+```
+
+Renew membership credentials
 
 ### register
 
@@ -50,8 +108,8 @@ Allows a user to register as a member
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name         | Type    | Description                    |
+| ------------ | ------- | ------------------------------ |
 | idCommitment | uint256 | The idCommitment of the member |
 
 ### slash
@@ -64,13 +122,13 @@ _Allows a user to slash a member_
 
 #### Parameters
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| idCommitment | uint256 | The idCommitment of the member |
-| receiver | address payable |  |
-| proof | uint256[8] |  |
+| Name         | Type            | Description                    |
+| ------------ | --------------- | ------------------------------ |
+| idCommitment | uint256         | The idCommitment of the member |
+| receiver     | address payable |                                |
+| proof        | uint256[8]      |                                |
 
-### _validateRegistration
+### \_validateRegistration
 
 ```solidity
 function _validateRegistration(uint256 idCommitment) internal view
@@ -78,7 +136,13 @@ function _validateRegistration(uint256 idCommitment) internal view
 
 _Inheriting contracts MUST override this function_
 
-### _validateSlash
+### \_validateIndexExpiration
+
+```solidity
+function _validateIndexExpiration(uint256 idCommitment, uint256 index) internal view
+```
+
+### \_validateSlash
 
 ```solidity
 function _validateSlash(uint256 idCommitment, address payable receiver, uint256[8] proof) internal pure
@@ -142,6 +206,12 @@ uint16 usingStorageIndex
 contract IPoseidonHasher poseidonHasher
 ```
 
+### membershipTTL
+
+```solidity
+uint40 membershipTTL
+```
+
 ### NewStorageContract
 
 ```solidity
@@ -157,21 +227,21 @@ modifier onlyUsableStorage()
 ### initialize
 
 ```solidity
-function initialize(address _poseidonHasher) external
+function initialize(address _poseidonHasher, uint40 _membershipTTL) external
 ```
 
-### _authorizeUpgrade
+### \_authorizeUpgrade
 
 ```solidity
 function _authorizeUpgrade(address newImplementation) internal
 ```
 
-_Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by
+\_Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by
 {upgradeTo} and {upgradeToAndCall}.
 
 Normally, this function will use an xref:access.adoc[access control] modifier such as {Ownable-onlyOwner}.
 
-```solidity
+````solidity
 function _authorizeUpgrade(address) internal override onlyOwner {}
 ```_
 
@@ -179,7 +249,7 @@ function _authorizeUpgrade(address) internal override onlyOwner {}
 
 ```solidity
 function _insertIntoStorageMap(address storageAddress) internal
-```
+````
 
 ### registerStorage
 
@@ -211,9 +281,14 @@ function register(uint16 storageIndex, uint256[] commitments) external
 function register(uint16 storageIndex, uint256 commitment) external
 ```
 
+### registerAtIndex
+
+```solidity
+function registerAtIndex(uint16 storageIndex, uint256 commitment, uint256 index) external
+```
+
 ### forceProgress
 
 ```solidity
 function forceProgress() external
 ```
-
