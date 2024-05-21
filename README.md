@@ -1,4 +1,6 @@
-# Hardhat Project for rln-contract
+# Hardhat Project for waku-rlnv1-contract
+
+> note: This repo is being archived in favour of the rln-v2 contracts for waku.
 
 ## Requirements
 
