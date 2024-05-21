@@ -20,6 +20,8 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
 
     IPoseidonHasher public poseidonHasher;
 
+    uint40 public membershipTTL;
+
     event NewStorageContract(uint16 index, address storageAddress);
 
     modifier onlyUsableStorage() {
@@ -27,8 +29,9 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
         _;
     }
 
-    function initialize(address _poseidonHasher) external initializer {
+    function initialize(address _poseidonHasher, uint40 _membershipTTL) external initializer {
         poseidonHasher = IPoseidonHasher(_poseidonHasher);
+        membershipTTL = _membershipTTL;
         __Ownable_init();
     }
 
@@ -49,7 +52,7 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
     }
 
     function newStorage() external onlyOwner {
-        WakuRln newStorageContract = new WakuRln(address(poseidonHasher), nextStorageIndex);
+        WakuRln newStorageContract = new WakuRln(address(poseidonHasher), nextStorageIndex, membershipTTL);
         _insertIntoStorageMap(address(newStorageContract));
     }
 
@@ -83,6 +86,11 @@ contract WakuRlnRegistry is OwnableUpgradeable, UUPSUpgradeable {
         uint256[] memory commitments = new uint256[](1);
         commitments[0] = commitment;
         WakuRln(storages[storageIndex]).register(commitments);
+    }
+
+    function registerAtIndex(uint16 storageIndex, uint256 commitment, uint256 index) external {
+         if (storageIndex >= nextStorageIndex) revert NoStorageContractAvailable();
+        WakuRln(storages[storageIndex]).registerAtIndex(commitment, index);
     }
 
     function forceProgress() external onlyOwner onlyUsableStorage {

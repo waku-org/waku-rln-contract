@@ -16,9 +16,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
   });
 
-  let initializeAbi = ["function initialize(address _poseidonHasher)"];
+  let initializeAbi = [
+    "function initialize(address _poseidonHasher, uint40 _ttl)",
+  ];
   let iface = new hre.ethers.utils.Interface(initializeAbi);
-  const data = iface.encodeFunctionData("initialize", [poseidonHasherAddress]);
+  const data = iface.encodeFunctionData("initialize", [
+    poseidonHasherAddress,
+    0,
+  ]);
 
   await deploy("WakuRlnRegistry_Proxy", {
     contract: "ERC1967Proxy",
